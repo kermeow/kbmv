@@ -1,12 +1,15 @@
 #include "config.hpp"
-#include "src/layout.hpp"
+#include "keys.hpp"
+#include "layout.hpp"
 
+#include <SFML/Window/Keyboard.hpp>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <regex>
 #include <string_view>
 #include <toml++/toml.hpp>
+#include <utility>
 
 #define PARSE_CONFIG_PART(DST, SRC) DST = SRC.value_or(DST)
 
@@ -29,6 +32,8 @@ trail_speed = 500
 [rect] # default rect settings
 rect_color = "#ff000080"
 border_color = "#ff0000"
+rect_color_pressed = "#ff666680"
+border_color_pressed = "#ff0000"
 border_size = 2
 
 [[layout]]
@@ -41,17 +46,27 @@ y = 32
 type = "key"
 id = "k1"
 parent = "anchor"
+key = "W"
 
 [[layout]]
 type = "key"
 id = "k2"
 parent = "k1"
 x = 60
+key = "A"
 
 [[layout]]
 type = "key"
 id = "k3"
 parent = "k2"
+x = 60
+key = "S"
+
+[[layout]]
+type = "key"
+id = "k4"
+parent = "k3"
+key = "D"
 x = 60
 
 )"sv;
@@ -64,6 +79,7 @@ void WriteDefaultConfig(const char *filename);
 void LoadConfig(const char *filename);
 void ParseConfig(toml::table table);
 void ReadColor(std::string hex_str, Color *color);
+void ReadKey(std::string key_str, sf::Keyboard::Key *key);
 
 // Function Definitions
 void LoadDefaultConfig() {
@@ -115,6 +131,11 @@ void ParseConfig(toml::table table) {
         ReadColor(rect_color, &KBMVConfig.rect.rect_color);
         ReadColor(border_color, &KBMVConfig.rect.border_color);
 
+        PARSE_CONFIG_PART(rect_color, table["rect"]["rect_color_pressed"]);
+        PARSE_CONFIG_PART(border_color, table["rect"]["border_color_pressed"]);
+        ReadColor(rect_color, &KBMVConfig.rect.rect_color_pressed);
+        ReadColor(border_color, &KBMVConfig.rect.border_color_pressed);
+
         PARSE_CONFIG_PART(KBMVConfig.rect.border_size,
                           table["rect"]["border_size"]);
     }
@@ -142,7 +163,9 @@ void ParseConfig(toml::table table) {
                 LayoutItemKey *key_item = new LayoutItemKey;
                 layout_item = key_item;
 
-                // TODO: keycode
+                std::string key_str;
+                PARSE_CONFIG_PART(key_str, item["key"]);
+                ReadKey(key_str, &key_item->key);
             } else if (strcmp(type, "mouse") == 0) {
                 KBMVLayout.use_mouse = true;
                 LayoutItemMouse *mouse_item = new LayoutItemMouse;
@@ -167,6 +190,11 @@ void ParseConfig(toml::table table) {
             PARSE_CONFIG_PART(border_color, item["border_color"]);
             ReadColor(rect_color, &layout_item->rect_color);
             ReadColor(border_color, &layout_item->border_color);
+
+            PARSE_CONFIG_PART(rect_color, item["rect_color_pressed"]);
+            PARSE_CONFIG_PART(border_color, item["border_color_pressed"]);
+            ReadColor(rect_color, &layout_item->rect_color_pressed);
+            ReadColor(border_color, &layout_item->border_color_pressed);
 
             PARSE_CONFIG_PART(layout_item->border_size, item["border_size"]);
 
@@ -209,5 +237,15 @@ void ReadColor(std::string hex_str, Color *color) {
         if (!match[4].str().empty())
             sscanf(match[4].str().c_str(), "%2hhx", &a);
         *color = Color{r, g, b, a};
+    }
+}
+
+void ReadKey(std::string key_str, sf::Keyboard::Key *key) {
+    for (std::pair<const char *, sf::Keyboard::Key> pair : KeyCodes) {
+        if (strcmp(key_str.c_str(), pair.first)) {
+            continue;
+        }
+        *key = pair.second;
+        break;
     }
 }

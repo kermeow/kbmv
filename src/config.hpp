@@ -15,6 +15,8 @@ typedef struct {
 typedef struct {
     Color rect_color;
     Color border_color;
+    Color rect_color_pressed;
+    Color border_color_pressed;
     float border_size;
 } rect_config_t;
 

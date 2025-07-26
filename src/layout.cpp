@@ -25,25 +25,23 @@ void ClearLayout() {
     LayoutMutex.unlock();
 }
 
-// RectBase
-void RectBase::draw_rect(Vector2 at, Vector2 size) {
-    Rectangle rect{.x = at.x, .y = at.y, .width = size.x, .height = size.y};
-    DrawRectangleRec(rect, this->rect_color);
-    if (this->border_size > 0)
-        DrawRectangleLinesEx(rect, this->border_size, this->border_color);
-}
-
-// TrailBase
-void TrailBase::draw_trails(Vector2 at, float width) {}
-void TrailBase::begin_trail() {
-    this->active_trail = new float[2];
-}
-void TrailBase::finish_trail() {
-    this->trails.push_back(this->active_trail);
-    this->active_trail = nullptr;
-}
-
 // LayoutItemBase
+void LayoutItemBase::draw_rect() {
+    Rectangle rect{.x = this->true_x,
+                   .y = this->true_y,
+                   .width = this->width,
+                   .height = this->height};
+    Color rect_color = this->rect_color;
+    Color border_color = this->border_color;
+    if (this->pressed) {
+        rect_color = this->rect_color_pressed;
+        border_color = this->border_color_pressed;
+    }
+    DrawRectangleRec(rect, rect_color);
+    if (this->border_size > 0)
+        DrawRectangleLinesEx(rect, this->border_size, border_color);
+}
+
 void LayoutItemBase::update_position() {
     if (this->position_set)
         return;
@@ -59,14 +57,38 @@ void LayoutItemBase::update_position() {
     }
 }
 
+void LayoutItemBase::draw_trails() {
+    if (this->active_trail != nullptr) {
+        Rectangle rect{.x = this->true_x,
+                       .y = this->true_y + trail_offset * this->height,
+                       .width = this->width,
+                       .height = this->active_trail[1] * this->trail_speed};
+        DrawRectangleRec(rect, this->rect_color_pressed);
+    }
+    for (float *trail : this->trails) {
+        Rectangle rect{.x = this->true_x,
+                       .y = this->true_y + (trail_offset * this->height) +
+                            trail[0] * this->trail_speed,
+                       .width = this->width,
+                       .height = trail[1] * this->trail_speed};
+        DrawRectangleRec(rect, this->rect_color_pressed);
+    }
+}
+void LayoutItemBase::begin_trail() {
+    this->active_trail = new float[2];
+    this->active_trail[0] = 0;
+    this->active_trail[1] = 0;
+}
+void LayoutItemBase::finish_trail() {
+    this->trails.push_back(this->active_trail);
+    this->active_trail = nullptr;
+}
+
 // LayoutItemKey
 void LayoutItemKey::draw() {
-    Vector2 position{.x = this->true_x, .y = this->true_y};
-    Vector2 size{.x = this->width, .y = this->height};
-
-    this->draw_trails(position, this->width);
-    this->draw_rect(position, size);
+    this->draw_trails();
+    this->draw_rect();
 }
 
 // LayoutItemMouse
-void LayoutItemMouse::draw() { }
+void LayoutItemMouse::draw() {}

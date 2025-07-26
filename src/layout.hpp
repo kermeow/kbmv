@@ -1,36 +1,16 @@
 #pragma once
 
 #include "config.hpp"
+#include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 #include <map>
 #include <mutex>
 #include <raylib.h>
 #include <vector>
 
-struct RectBase {
-    Color rect_color = KBMVConfig.rect.rect_color;
-    Color border_color = KBMVConfig.rect.rect_color;
-    float border_size = KBMVConfig.rect.border_size;
-
-    void draw_rect(Vector2 at, Vector2 size);
-};
-
-struct TrailBase {
-    float trail_offset = KBMVConfig.trail.trail_offset;
-    float trail_speed = KBMVConfig.trail.trail_speed;
-
-    // i should make this a struct but i cba so [0] = position, [1] = height
-    float *active_trail = nullptr;
-    std::vector<float *> trails;
-
-    void draw_trails(Vector2 at, float width);
-    void begin_trail();
-    void finish_trail();
-};
-
 enum LayoutItemType { LAYOUT_NONE, LAYOUT_KEYBOARD, LAYOUT_MOUSE, LAYOUT_MAX };
 
-struct LayoutItemBase : RectBase, TrailBase {
+struct LayoutItemBase {
     LayoutItemType type;
 
     float x = 0, y = 0;
@@ -42,24 +22,48 @@ struct LayoutItemBase : RectBase, TrailBase {
     std::string parent_id = "";
     LayoutItemBase *parent = nullptr;
 
+    bool pressed = false;
+
+    Color rect_color = KBMVConfig.rect.rect_color;
+    Color border_color = KBMVConfig.rect.border_color;
+    float border_size = KBMVConfig.rect.border_size;
+
+    Color rect_color_pressed = KBMVConfig.rect.rect_color_pressed;
+    Color border_color_pressed = KBMVConfig.rect.border_color_pressed;
+    // float border_size_pressed = KBMVConfig.rect.border_size;
+
+    float trail_offset = KBMVConfig.trail.trail_offset;
+    float trail_speed = KBMVConfig.trail.trail_speed;
+
+    // i should make this a struct but i cba so [0] = position, [1] = height
+    float *active_trail = nullptr;
+    std::vector<float *> trails;
+
     virtual void draw() {};
     void update_position();
+
+    void draw_rect();
+    void draw_trails();
+    void begin_trail();
+    void finish_trail();
 };
 
 struct LayoutItemNone : LayoutItemBase {
-    LayoutItemType type = LAYOUT_NONE;
+    LayoutItemNone() { this->type = LAYOUT_NONE; }
 
     void draw() override {};
 };
 
 struct LayoutItemKey : LayoutItemBase {
-    LayoutItemType type = LAYOUT_KEYBOARD;
+    LayoutItemKey() { this->type = LAYOUT_KEYBOARD; }
+
+    sf::Keyboard::Key key;
 
     void draw() override;
 };
 
 struct LayoutItemMouse : LayoutItemBase {
-    LayoutItemType type = LAYOUT_MOUSE;
+    LayoutItemMouse() { this->type = LAYOUT_MOUSE; }
 
     void draw() override;
 };

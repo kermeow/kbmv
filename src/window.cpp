@@ -48,11 +48,9 @@ void DrawFrame() {
     DrawFPS(8, 8);
 
     LayoutMutex.lock();
-
     for (LayoutItemBase *item : KBMVLayout.items) {
         item->draw();
     }
-
     LayoutMutex.unlock();
 
     EndDrawing();
