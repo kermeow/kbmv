@@ -1,4 +1,5 @@
 #include "layout.hpp"
+#include "src/config.hpp"
 
 #include <iostream>
 #include <mutex>
@@ -65,6 +66,7 @@ void LayoutItemBase::draw_trails() {
                        .height = this->active_trail[1] * this->trail_speed};
         DrawRectangleRec(rect, this->rect_color_pressed);
     }
+
     for (float *trail : this->trails) {
         Rectangle rect{.x = this->true_x,
                        .y = this->true_y + (trail_offset * this->height) +
@@ -72,6 +74,17 @@ void LayoutItemBase::draw_trails() {
                        .width = this->width,
                        .height = trail[1] * this->trail_speed};
         DrawRectangleRec(rect, this->rect_color_pressed);
+    }
+
+    float max_y = KBMVConfig.window.height;
+    while (this->trails.size() > 0) {
+        float *trail = trails[0];
+        float y = this->true_y + (trail_offset * this->height) +
+                  trail[0] * this->trail_speed;
+        if (y < max_y)
+            break;
+        this->trails.erase(this->trails.begin());
+        delete trail;
     }
 }
 void LayoutItemBase::begin_trail() {
