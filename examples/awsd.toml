@@ -1,0 +1,45 @@
+# AWSD Example
+# Displays keys in AWSD order.
+
+[window]
+width = 300
+height = 600
+
+[trail]
+trail_offset = 1
+trail_speed = 400
+
+[rect]
+border_size = 4
+
+[[layout]]
+type = "none"
+id = "anchor"
+x = 150
+y = 10
+
+[[layout]]
+type = "key"
+parent = "w"
+x = -60
+key = "A"
+
+[[layout]]
+type = "key"
+id = "w"
+parent = "anchor"
+x = -55
+key = "W"
+
+[[layout]]
+type = "key"
+id = "s"
+parent = "anchor"
+x = 5
+key = "S"
+
+[[layout]]
+type = "key"
+parent = "s"
+x = 60
+key = "D"

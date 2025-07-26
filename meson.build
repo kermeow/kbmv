@@ -7,5 +7,5 @@ deps = [
     dependency('tomlplusplus'),
 ]
 
-subdir('src')
+subdir('./src')
 executable('kbmv', src, dependencies: deps)
