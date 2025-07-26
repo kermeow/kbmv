@@ -16,7 +16,7 @@ void WindowThread() {
     const int width = KBMVConfig.window.width,
               height = KBMVConfig.window.height;
 
-    SetConfigFlags(FLAG_WINDOW_TRANSPARENT | FLAG_WINDOW_UNDECORATED);
+    SetConfigFlags(FLAG_WINDOW_TRANSPARENT);
     SetTraceLogLevel(LOG_WARNING);
     InitWindow(width, height, "kbmv");
 

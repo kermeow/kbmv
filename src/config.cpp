@@ -16,62 +16,14 @@
 using namespace std::string_view_literals;
 
 static constexpr std::string_view default_config = R"(#kbmv.toml
-# This is the default KBMV config!
-# You may edit this file to your liking.
-# If KBMV updates, new values will _not_ automatically be added.
-# You can recreate this by moving the existing file elsewhere.
-
-[window]
-width = 600
-height = 800
-
-[trail] # default trail settings
-trail_offset = 1
-trail_speed = 500
-
-[rect] # default rect settings
-rect_color = "#ff000080"
-border_color = "#ff0000"
-rect_color_pressed = "#ff666680"
-border_color_pressed = "#ff0000"
-border_size = 2
-
-[[layout]]
-type = "none"
-id = "anchor"
-x = 8
-y = 32
-
-[[layout]]
-type = "key"
-id = "k1"
-parent = "anchor"
-key = "W"
-
-[[layout]]
-type = "key"
-id = "k2"
-parent = "k1"
-x = 60
-key = "A"
-
-[[layout]]
-type = "key"
-id = "k3"
-parent = "k2"
-x = 60
-key = "S"
-
-[[layout]]
-type = "key"
-id = "k4"
-parent = "k3"
-key = "D"
-x = 60
+# By default, this is completely empty.
+# There are some example configurations included in the repo,
+# or you can make your own.
+# https://github.com/kermeow/kbmv
 
 )"sv;
 
-config_t KBMVConfig{.window{.width = 800, .height = 600}};
+config_s KBMVConfig{};
 
 // Function Declarations
 void LoadDefaultConfig();

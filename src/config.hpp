@@ -2,31 +2,31 @@
 
 #include <raylib.h>
 
-typedef struct {
-    int width;
-    int height;
-} window_config_t;
+struct window_config_s {
+    int width = 800;
+    int height = 600;
+};
 
-typedef struct {
-    float trail_offset;
-    float trail_speed;
-} trail_config_t;
+struct trail_config_s {
+    float trail_offset = 1;
+    float trail_speed = 400;
+};
 
-typedef struct {
-    Color rect_color;
-    Color border_color;
-    Color rect_color_pressed;
-    Color border_color_pressed;
-    float border_size;
-} rect_config_t;
+struct rect_config_s {
+    Color rect_color = GRAY;
+    Color border_color = WHITE;
+    Color rect_color_pressed = WHITE;
+    Color border_color_pressed = WHITE;
+    float border_size = 1;
+};
 
-typedef struct {
-    window_config_t window;
-    trail_config_t trail;
-    rect_config_t rect;
-} config_t;
+struct config_s {
+    window_config_s window{};
+    trail_config_s trail{};
+    rect_config_s rect{};
+};
 
-extern config_t KBMVConfig;
+extern config_s KBMVConfig;
 
 void LoadDefaultConfig();
 void WriteDefaultConfig(const char *filename);
