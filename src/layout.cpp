@@ -35,8 +35,13 @@ void RectBase::draw_rect(Vector2 at, Vector2 size) {
 
 // TrailBase
 void TrailBase::draw_trails(Vector2 at, float width) {}
-void TrailBase::begin_trail() {}
-void TrailBase::finish_trail() {}
+void TrailBase::begin_trail() {
+    this->active_trail = new float[2];
+}
+void TrailBase::finish_trail() {
+    this->trails.push_back(this->active_trail);
+    this->active_trail = nullptr;
+}
 
 // LayoutItemBase
 void LayoutItemBase::update_position() {

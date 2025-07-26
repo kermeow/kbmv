@@ -4,6 +4,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <string_view>
 #include <toml++/toml.hpp>
 
@@ -21,8 +22,14 @@ static constexpr std::string_view default_config = R"(#kbmv.toml
 width = 600
 height = 800
 
-[trail] # default trail settings unless specified otherwise
+[trail] # default trail settings
+trail_offset = 1
 trail_speed = 500
+
+[rect] # default rect settings
+rect_color = "#ff000080"
+border_color = "#ff0000"
+border_size = 2
 
 [[layout]]
 type = "none"
@@ -56,6 +63,7 @@ void LoadDefaultConfig();
 void WriteDefaultConfig(const char *filename);
 void LoadConfig(const char *filename);
 void ParseConfig(toml::table table);
+void ReadColor(std::string hex_str, Color *color);
 
 // Function Definitions
 void LoadDefaultConfig() {
@@ -94,8 +102,21 @@ void ParseConfig(toml::table table) {
     }
 
     {
+        PARSE_CONFIG_PART(KBMVConfig.trail.trail_offset,
+                          table["trail"]["trail_offset"]);
         PARSE_CONFIG_PART(KBMVConfig.trail.trail_speed,
                           table["trail"]["trail_speed"]);
+    }
+
+    {
+        std::string rect_color, border_color;
+        PARSE_CONFIG_PART(rect_color, table["rect"]["rect_color"]);
+        PARSE_CONFIG_PART(border_color, table["rect"]["border_color"]);
+        ReadColor(rect_color, &KBMVConfig.rect.rect_color);
+        ReadColor(border_color, &KBMVConfig.rect.border_color);
+
+        PARSE_CONFIG_PART(KBMVConfig.rect.border_size,
+                          table["rect"]["border_size"]);
     }
 
     {
@@ -141,6 +162,14 @@ void ParseConfig(toml::table table) {
             PARSE_CONFIG_PART(layout_item->width, item["width"]);
             PARSE_CONFIG_PART(layout_item->height, item["height"]);
 
+            std::string rect_color, border_color;
+            PARSE_CONFIG_PART(rect_color, item["rect_color"]);
+            PARSE_CONFIG_PART(border_color, item["border_color"]);
+            ReadColor(rect_color, &layout_item->rect_color);
+            ReadColor(border_color, &layout_item->border_color);
+
+            PARSE_CONFIG_PART(layout_item->border_size, item["border_size"]);
+
             std::string parent_id = item["parent"].value_or(std::string{});
             layout_item->parent_id = parent_id;
             if (KBMVLayout.id_map.find(parent_id) != KBMVLayout.id_map.end()) {
@@ -165,5 +194,20 @@ void ParseConfig(toml::table table) {
 
             KBMVLayout.items.push_back(layout_item);
         });
+    }
+}
+
+void ReadColor(std::string hex_str, Color *color) {
+    static std::regex pattern(
+        "#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})?");
+    std::smatch match;
+    if (std::regex_match(hex_str, match, pattern)) {
+        unsigned char r, g, b, a = 255;
+        sscanf(match[1].str().c_str(), "%2hhx", &r);
+        sscanf(match[2].str().c_str(), "%2hhx", &g);
+        sscanf(match[3].str().c_str(), "%2hhx", &b);
+        if (!match[4].str().empty())
+            sscanf(match[4].str().c_str(), "%2hhx", &a);
+        *color = Color{r, g, b, a};
     }
 }

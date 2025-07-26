@@ -8,19 +8,20 @@
 #include <vector>
 
 struct RectBase {
-    Color rect_color = GRAY;
-    Color border_color = WHITE;
-    float border_size = 1;
+    Color rect_color = KBMVConfig.rect.rect_color;
+    Color border_color = KBMVConfig.rect.rect_color;
+    float border_size = KBMVConfig.rect.border_size;
 
     void draw_rect(Vector2 at, Vector2 size);
 };
 
 struct TrailBase {
+    float trail_offset = KBMVConfig.trail.trail_offset;
     float trail_speed = KBMVConfig.trail.trail_speed;
 
     // i should make this a struct but i cba so [0] = position, [1] = height
-    float active_trail[2];
-    std::vector<float[2]> trails;
+    float *active_trail = nullptr;
+    std::vector<float *> trails;
 
     void draw_trails(Vector2 at, float width);
     void begin_trail();
