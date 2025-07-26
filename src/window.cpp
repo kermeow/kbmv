@@ -1,20 +1,41 @@
 #include "window.hpp"
 
-#include "raylib.h"
+#include "config.hpp"
+#include "main.hpp"
+#include <raylib.h>
 
+// Function Declarations
+void WindowThread();
+void DrawFrame();
+
+// Function Definitions
 void WindowThread() {
-    int width = 800, height = 600;
+    const int width = KBMVConfig.window.width,
+              height = KBMVConfig.window.height;
+
+    SetConfigFlags(FLAG_WINDOW_TRANSPARENT | FLAG_WINDOW_UNDECORATED);
     InitWindow(width, height, "kbmv");
 
     SetWindowMinSize(width, height);
     SetWindowMaxSize(width, height);
 
-    SetTargetFPS(30);
+    SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
-        BeginDrawing();
-        ClearBackground(Color{.a = 0});
-        DrawFPS(8, 8);
-        EndDrawing();
+        if (!IsRunning.load()) {
+            CloseWindow();
+            break;
+        }
+        DrawFrame();
     }
+}
+
+void DrawFrame() {
+    BeginDrawing();
+
+    ClearBackground(BLANK);
+
+    DrawFPS(8, 8);
+
+    EndDrawing();
 }
