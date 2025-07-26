@@ -1,4 +1,9 @@
 #include "input.hpp"
+
+#include "main.hpp"
 #include <iostream>
 
-void InputThread() { std::cout << "Look ma! I'm threaded too!" << std::endl; }
+void InputThread() {
+    while (IsRunning.load()) {
+    }
+}
