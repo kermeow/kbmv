@@ -14,6 +14,7 @@ void WindowThread() {
               height = KBMVConfig.window.height;
 
     SetConfigFlags(FLAG_WINDOW_TRANSPARENT | FLAG_WINDOW_UNDECORATED);
+    SetTraceLogLevel(LOG_WARNING);
     InitWindow(width, height, "kbmv");
 
     SetWindowMinSize(width, height);

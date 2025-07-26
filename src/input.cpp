@@ -20,6 +20,6 @@ void InputThread() {
         last_mouse_position = mouse_position;
 
         using namespace std::chrono_literals;
-        std::this_thread::sleep_for(100us); // prevent cpu cooking
+        std::this_thread::sleep_for(250us); // prevent cpu cooking
     }
 }
