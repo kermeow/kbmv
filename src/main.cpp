@@ -13,14 +13,14 @@ int main(int argc, char **argv) {
     std::cout << "Loading default config..." << std::endl;
     LoadDefaultConfig();
 
-    bool config_exists = std::filesystem::exists("kbmv.toml");
-    if (!config_exists) {
-        std::cout << "Writing default config..." << std::endl;
-        WriteDefaultConfig("kbmv.toml");
-    } else {
-        std::cout << "Loading user config..." << std::endl;
-        LoadConfig("kbmv.toml");
-    }
+    // bool config_exists = std::filesystem::exists("kbmv.toml");
+    // if (!config_exists) {
+    //     std::cout << "Writing default config..." << std::endl;
+    //     WriteDefaultConfig("kbmv.toml");
+    // } else {
+    //     std::cout << "Loading user config..." << std::endl;
+    //     LoadConfig("kbmv.toml");
+    // }
 
     std::thread window_thread(&WindowThread);
     std::thread input_thread(&InputThread);
