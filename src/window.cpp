@@ -2,6 +2,9 @@
 
 #include "config.hpp"
 #include "main.hpp"
+#include "src/layout.hpp"
+#include <iostream>
+#include <memory>
 #include <raylib.h>
 
 // Function Declarations
@@ -22,6 +25,12 @@ void WindowThread() {
 
     SetTargetFPS(60);
 
+    LayoutMutex.lock();
+    for (LayoutItemBase *item : KBMVLayout.items) {
+        item->update_position();
+    }
+    LayoutMutex.unlock();
+
     while (!WindowShouldClose()) {
         if (!IsRunning.load()) {
             CloseWindow();
@@ -37,6 +46,14 @@ void DrawFrame() {
     ClearBackground(BLANK);
 
     DrawFPS(8, 8);
+
+    LayoutMutex.lock();
+
+    for (LayoutItemBase *item : KBMVLayout.items) {
+        item->draw();
+    }
+
+    LayoutMutex.unlock();
 
     EndDrawing();
 }
