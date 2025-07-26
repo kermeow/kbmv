@@ -3,6 +3,6 @@ project('kbmv', 'cpp', version: '0.1', default_options: [
 ])
 
 src = ['src/main.cpp', 'src/config.cpp', 'src/window.cpp', 'src/input.cpp']
-deps = [dependency('raylib'), dependency('sfml-window'), dependency('tomlplusplus')]
+deps = [dependency('raylib'), dependency('sfml-system'), dependency('sfml-window'), dependency('tomlplusplus')]
 
 executable('kbmv', src, dependencies: deps)
