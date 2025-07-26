@@ -3,6 +3,7 @@
 #include "layout.hpp"
 
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -70,6 +71,8 @@ void ParseConfig(toml::table table) {
     }
 
     {
+        PARSE_CONFIG_PART(KBMVConfig.trail.trail_enabled,
+                          table["trail"]["trail_enabled"]);
         PARSE_CONFIG_PART(KBMVConfig.trail.trail_offset,
                           table["trail"]["trail_offset"]);
         PARSE_CONFIG_PART(KBMVConfig.trail.trail_speed,
@@ -123,7 +126,31 @@ void ParseConfig(toml::table table) {
                 LayoutItemMouse *mouse_item = new LayoutItemMouse;
                 layout_item = mouse_item;
 
-                // TODO: mouse handling
+                int button;
+                PARSE_CONFIG_PART(button, item["button"]);
+                switch (button) {
+                case 5: {
+                    mouse_item->button = sf::Mouse::Button::Extra2;
+                    break;
+                }
+                case 4: {
+                    mouse_item->button = sf::Mouse::Button::Extra1;
+                    break;
+                }
+                case 3: {
+                    mouse_item->button = sf::Mouse::Button::Middle;
+                    break;
+                }
+                case 2: {
+                    mouse_item->button = sf::Mouse::Button::Right;
+                    break;
+                }
+                case 1:
+                default: {
+                    mouse_item->button = sf::Mouse::Button::Left;
+                    break;
+                }
+                }
             } else {
                 // idk what this is
                 std::cerr << "Unknown layout item type '" << type << "'"
@@ -149,6 +176,11 @@ void ParseConfig(toml::table table) {
             ReadColor(border_color, &layout_item->border_color_pressed);
 
             PARSE_CONFIG_PART(layout_item->border_size, item["border_size"]);
+
+            PARSE_CONFIG_PART(layout_item->trail_enabled,
+                              item["trail_enabled"]);
+            PARSE_CONFIG_PART(layout_item->trail_offset, item["trail_offset"]);
+            PARSE_CONFIG_PART(layout_item->trail_speed, item["trail_speed"]);
 
             std::string parent_id = item["parent"].value_or(std::string{});
             layout_item->parent_id = parent_id;

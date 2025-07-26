@@ -59,6 +59,9 @@ void LayoutItemBase::update_position() {
 }
 
 void LayoutItemBase::draw_trails() {
+    if (!this->trail_enabled)
+        return;
+
     if (this->active_trail != nullptr) {
         Rectangle rect{.x = this->true_x,
                        .y = this->true_y + trail_offset * this->height,
@@ -87,12 +90,18 @@ void LayoutItemBase::draw_trails() {
         delete trail;
     }
 }
+
 void LayoutItemBase::begin_trail() {
+    if (!this->trail_enabled)
+        return;
     this->active_trail = new float[2];
     this->active_trail[0] = 0;
     this->active_trail[1] = 0;
 }
+
 void LayoutItemBase::finish_trail() {
+    if (!this->trail_enabled)
+        return;
     this->trails.push_back(this->active_trail);
     this->active_trail = nullptr;
 }
@@ -104,4 +113,7 @@ void LayoutItemKey::draw() {
 }
 
 // LayoutItemMouse
-void LayoutItemMouse::draw() {}
+void LayoutItemMouse::draw() {
+    this->draw_trails();
+    this->draw_rect();
+}

@@ -8,6 +8,7 @@ struct window_config_s {
 };
 
 struct trail_config_s {
+    bool trail_enabled = true;
     float trail_offset = 1;
     float trail_speed = 400;
 };

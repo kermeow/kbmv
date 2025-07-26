@@ -14,10 +14,18 @@ int main(int argc, char **argv) {
     LoadDefaultConfig();
 
     const char *config_filename = "kbmv.toml";
+    bool write_default_config = true;
+    if (argc == 2) {
+        config_filename = argv[1];
+        write_default_config = false;
+    }
+
     bool config_exists = std::filesystem::exists(config_filename);
     if (!config_exists) {
-        std::cout << "Writing default config..." << std::endl;
-        WriteDefaultConfig(config_filename);
+        if (write_default_config) {
+            std::cout << "Writing default config..." << std::endl;
+            WriteDefaultConfig(config_filename);
+        }
     } else {
         std::cout << "Loading user config..." << std::endl;
         LoadConfig(config_filename);

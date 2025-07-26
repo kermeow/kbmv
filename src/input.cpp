@@ -40,38 +40,47 @@ void InputThread() {
         LayoutMutex.lock();
 
         for (LayoutItemBase *item : KBMVLayout.items) {
+            bool pressed = false;
+
             switch (item->type) {
             case LAYOUT_KEYBOARD: {
                 LayoutItemKey *key_item =
                     reinterpret_cast<LayoutItemKey *>(item);
 
-                for (float *trail : key_item->trails) {
-                    trail[0] += delta_time;
-                }
+                pressed = sf::Keyboard::isKeyPressed(key_item->key);
+                break;
+            }
+            case LAYOUT_MOUSE: {
+                LayoutItemMouse *mouse_item =
+                    reinterpret_cast<LayoutItemMouse *>(item);
 
-                bool pressed = sf::Keyboard::isKeyPressed(key_item->key);
-
-                if (key_item->pressed) {
-                    key_item->active_trail[1] += delta_time;
-                }
-
-                if (pressed && !key_item->pressed) {
-                    // we just pressed the key
-                    key_item->begin_trail();
-                }
-
-                if (key_item->pressed && !pressed) {
-                    // we just released the key
-                    key_item->finish_trail();
-                }
-
-                key_item->pressed = pressed;
+                pressed = sf::Mouse::isButtonPressed(mouse_item->button);
                 break;
             }
             case LAYOUT_NONE:
             default:
                 break;
             }
+
+            for (float *trail : item->trails) {
+                trail[0] += delta_time;
+            }
+
+            if (item->active_trail != nullptr) {
+                item->active_trail[1] += delta_time;
+            }
+
+            if (pressed && !item->pressed) {
+                // we just pressed the button
+                item->begin_trail();
+            }
+
+            if (item->pressed && !pressed) {
+                // we just released the button
+                item->finish_trail();
+            }
+
+            item->pressed = pressed;
         }
 
         LayoutMutex.unlock();

@@ -2,6 +2,7 @@
 
 #include "config.hpp"
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
 #include <iostream>
 #include <map>
 #include <mutex>
@@ -32,6 +33,7 @@ struct LayoutItemBase {
     Color border_color_pressed = KBMVConfig.rect.border_color_pressed;
     // float border_size_pressed = KBMVConfig.rect.border_size;
 
+    bool trail_enabled = KBMVConfig.trail.trail_enabled;
     float trail_offset = KBMVConfig.trail.trail_offset;
     float trail_speed = KBMVConfig.trail.trail_speed;
 
@@ -64,6 +66,8 @@ struct LayoutItemKey : LayoutItemBase {
 
 struct LayoutItemMouse : LayoutItemBase {
     LayoutItemMouse() { this->type = LAYOUT_MOUSE; }
+
+    sf::Mouse::Button button;
 
     void draw() override;
 };
