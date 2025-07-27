@@ -1,10 +1,8 @@
 #include "window.hpp"
 
 #include "config.hpp"
+#include "layout.hpp"
 #include "main.hpp"
-#include "src/layout.hpp"
-#include <iostream>
-#include <memory>
 #include <raylib.h>
 
 // Function Declarations

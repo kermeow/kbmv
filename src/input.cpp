@@ -1,12 +1,11 @@
 #include "input.hpp"
 
+#include "layout.hpp"
 #include "main.hpp"
-#include "src/layout.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <chrono>
-#include <iostream>
 #include <ratio>
 #include <thread>
 

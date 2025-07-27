@@ -1,7 +1,6 @@
 #include "layout.hpp"
-#include "src/config.hpp"
 
-#include <iostream>
+#include "config.hpp"
 #include <mutex>
 #include <raylib.h>
 #include <vector>

@@ -3,10 +3,10 @@
 #include "config.hpp"
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
-#include <iostream>
 #include <map>
 #include <mutex>
 #include <raylib.h>
+#include <string>
 #include <vector>
 
 enum LayoutItemType { LAYOUT_NONE, LAYOUT_KEYBOARD, LAYOUT_MOUSE, LAYOUT_MAX };
