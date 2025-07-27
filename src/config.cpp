@@ -66,6 +66,8 @@ void LoadConfig(const char *filename) {
 
 void ParseConfig(toml::table table) {
     {
+        PARSE_CONFIG_PART(KBMVConfig.window.show_fps,
+                          table["window"]["show_fps"]);
         PARSE_CONFIG_PART(KBMVConfig.window.width, table["window"]["width"]);
         PARSE_CONFIG_PART(KBMVConfig.window.height, table["window"]["height"]);
     }

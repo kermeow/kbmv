@@ -3,6 +3,7 @@
 #include <raylib.h>
 
 struct window_config_s {
+    bool show_fps = false;
     int width = 800;
     int height = 600;
 };
